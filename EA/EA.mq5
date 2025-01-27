@@ -11,6 +11,8 @@
 
 CTrade trade;
 
+input group "Trade Settings";
+
 enum randomTimeEntry
   {
    ON = 1,
@@ -51,7 +53,7 @@ input paperTradeTest PaperTradeTest = 0;
 int ma_handle;
 
 void OrderEntry(ENUM_TIMEFRAMES timeframe, bool stop_loss, 
-int stop_in_points, bool take_profit, int take_profit_in_points, int magic_number, double lot_size)
+int stop_in_points, bool take_profit, int take_profit_in_points, double lot_size)
   {
    bool entry;
    double stop_price = 0, take_profit_price = 0;
@@ -78,7 +80,7 @@ int stop_in_points, bool take_profit, int take_profit_in_points, int magic_numbe
         {
          take_profit_price = SymbolInfoDouble(_Symbol, SYMBOL_ASK) + (take_profit_in_points*_Point);
         }
-      trade.SetExpertMagicNumber(magic_number);
+      
       entry = trade.Buy(lot_size,_Symbol,0,stop_price,take_profit_price,"Buy");
         {
          if(!entry)
@@ -102,7 +104,7 @@ int stop_in_points, bool take_profit, int take_profit_in_points, int magic_numbe
         {
          take_profit_price = SymbolInfoDouble(_Symbol, SYMBOL_BID) - (take_profit_in_points*_Point);
         }
-      trade.SetExpertMagicNumber(magic_number);
+
       entry = trade.Sell(lot_size,_Symbol,0,stop_price,take_profit_price,"Sell");
         {
          if(!entry)
@@ -256,6 +258,14 @@ int moving_average,int moving_average_type)
        
 void OnInit()
   {
+   Alert( ma_handle);
+   Comment(ma_handle);
+   Print(ma_handle);
+   PrintFormat("the value is %d", ma_handle);
+   
+   Sleep(30000);
+   
+   trade.SetExpertMagicNumber(MagicNumber);
    ma_handle = iMA(_Symbol,Timeframe,MovingAverage,0,MovingAverageType,PRICE_CLOSE);
   }
    
@@ -289,7 +299,7 @@ void OnTick()
         {
          if(RandomTimeEntry==0 || TimeCurrent() > (iTime(_Symbol,Timeframe,0) + time_to_trade_addition))
            {
-            OrderEntry(Timeframe, StopLoss, StopInPoints, TakeProfit, TakeProfitInPoints, MagicNumber, LotSize);
+            OrderEntry(Timeframe, StopLoss, StopInPoints, TakeProfit, TakeProfitInPoints, LotSize);
            }
         }
      }
